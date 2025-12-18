@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://durr7nk4l4oq8"]
+
+[ext_resource type="Script" uid="uid://cfpt8eomwde1w" path="res://src/board/board.gd" id="1_dssfw"]
+[ext_resource type="PackedScene" uid="uid://cv4sikuyx7tbs" path="res://src/tile/Tile.tscn" id="2_58vol"]
+
+[node name="Board" type="Node2D"]
+script = ExtResource("1_dssfw")
+tile_scene = ExtResource("2_58vol")
+
+[node name="Tile" parent="." instance=ExtResource("2_58vol")]

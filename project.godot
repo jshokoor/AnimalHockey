@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="AnimalHockey"
-config/features=PackedStringArray("4.4", "Mobile")
+run/main_scene="uid://durr7nk4l4oq8"
+config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
 [rendering]
