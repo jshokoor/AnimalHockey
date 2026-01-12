@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://8xafdr0vdh50"]
+
+[ext_resource type="PackedScene" uid="uid://6oypvlom6vky" path="res://src/ocean/Ocean.tscn" id="1_bgt48"]
+[ext_resource type="Script" uid="uid://q5mp88y4v36h" path="res://src/battlescene3d/battlescene_3d.gd" id="1_ybuor"]
+[ext_resource type="Script" uid="uid://ku1tmjlpfu02" path="res://src/battlescene3d/battlecontroller.gd" id="2_dde22"]
+[ext_resource type="Script" uid="uid://dxe6jfslbs8f4" path="res://src/battlescene3d/windsystem.gd" id="4_r8ppj"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ybuor"]
+size = Vector2(4, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ybuor"]
+transparency = 1
+albedo_color = Color(0.99607843, 1, 0, 0.40392157)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_r8ppj"]
+top_radius = 0.05
+bottom_radius = 1.0
+height = 3.0
+
+[node name="Battlescene3d" type="Node3D"]
+script = ExtResource("1_ybuor")
+
+[node name="battlecontroller" type="Node" parent="."]
+script = ExtResource("2_dde22")
+
+[node name="playership" type="Node3D" parent="."]
+
+[node name="enemyship" type="Node3D" parent="."]
+
+[node name="cameras" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="cameras"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 20, 0)
+projection = 1
+current = true
+
+[node name="Ocean" parent="." instance=ExtResource("1_bgt48")]
+
+[node name="gridhighlight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+mesh = SubResource("PlaneMesh_ybuor")
+surface_material_override/0 = SubResource("StandardMaterial3D_ybuor")
+
+[node name="windsystem" type="Node3D" parent="."]
+script = ExtResource("4_r8ppj")
+
+[node name="windarrow" type="MeshInstance3D" parent="windsystem"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1, 0)
+mesh = SubResource("CylinderMesh_r8ppj")
+skeleton = NodePath("../..")

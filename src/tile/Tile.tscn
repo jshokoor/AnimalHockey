@@ -3,11 +3,18 @@
 [ext_resource type="Script" uid="uid://c6chdxmdffhf4" path="res://src/tile/tile.gd" id="1_g8syq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g8syq"]
+size = Vector2(48, 48)
 
 [node name="Tile" type="Area2D"]
 script = ExtResource("1_g8syq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.375, 0.375)
+centered = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(24, 24)
 shape = SubResource("RectangleShape2D_g8syq")
+
+[connection signal="mouse_entered" from="." to="." method="_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_mouse_exited"]

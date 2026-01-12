@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://6oypvlom6vky"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5bem8"]
+size = Vector2(50, 50)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5bem8"]
+albedo_color = Color(0.26066667, 0.61856574, 0.80448145, 1)
+roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4y37t"]
+size = Vector3(50, 0.1, 50)
+
+[node name="Ocean" type="StaticBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_5bem8")
+surface_material_override/0 = SubResource("StandardMaterial3D_5bem8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_4y37t")
