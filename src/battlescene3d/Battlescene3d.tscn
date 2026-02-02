@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://8xafdr0vdh50"]
+[gd_scene load_steps=10 format=3 uid="uid://8xafdr0vdh50"]
 
 [ext_resource type="PackedScene" uid="uid://6oypvlom6vky" path="res://src/ocean/Ocean.tscn" id="1_bgt48"]
 [ext_resource type="Script" uid="uid://q5mp88y4v36h" path="res://src/battlescene3d/battlescene_3d.gd" id="1_ybuor"]
 [ext_resource type="Script" uid="uid://ku1tmjlpfu02" path="res://src/battlescene3d/battlecontroller.gd" id="2_dde22"]
+[ext_resource type="Script" uid="uid://dvqg0x0y3d7aw" path="res://src/battlescene3d/ship.gd" id="3_788y3"]
+[ext_resource type="PackedScene" uid="uid://ds3ubdcfol6lt" path="res://src/ship/Ship.tscn" id="3_b02kg"]
 [ext_resource type="Script" uid="uid://dxe6jfslbs8f4" path="res://src/battlescene3d/windsystem.gd" id="4_r8ppj"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ybuor"]
@@ -24,8 +26,17 @@ script = ExtResource("1_ybuor")
 script = ExtResource("2_dde22")
 
 [node name="playership" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+script = ExtResource("3_788y3")
+facing_direction = Vector3(0, 0, 1)
+
+[node name="Ship" parent="playership" instance=ExtResource("3_b02kg")]
 
 [node name="enemyship" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+script = ExtResource("3_788y3")
+
+[node name="Ship" parent="enemyship" instance=ExtResource("3_b02kg")]
 
 [node name="cameras" type="Node3D" parent="."]
 
@@ -33,6 +44,7 @@ script = ExtResource("2_dde22")
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 20, 0)
 projection = 1
 current = true
+size = 40.0
 
 [node name="Ocean" parent="." instance=ExtResource("1_bgt48")]
 
@@ -43,8 +55,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ybuor")
 
 [node name="windsystem" type="Node3D" parent="."]
 script = ExtResource("4_r8ppj")
+wind_direction = Vector3(0, 0, 1)
 
-[node name="windarrow" type="MeshInstance3D" parent="windsystem"]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1, 0)
+[node name="pivot" type="Node3D" parent="windsystem"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 16)
+
+[node name="windarrow" type="MeshInstance3D" parent="windsystem/pivot"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
 mesh = SubResource("CylinderMesh_r8ppj")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")

@@ -7,6 +7,7 @@ enum TurnOwner {
 
 var current_turn: TurnOwner = TurnOwner.PLAYER
 
+
 @onready var battle_scene := get_parent()
 @onready var grid_controller := battle_scene
 

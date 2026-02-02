@@ -3,27 +3,27 @@ extends Node3D
 # =====================
 # WIND CONFIG
 # =====================
-@export var wind_direction: Vector3 = Vector3(0, 0, -1)
-@export var wind_strength: float = 1.0
-
+@export var wind_direction: Vector3 = Vector3(1, 0, 0)
 
 # =====================
-# LOOT SEARCH CONFIG
+# LOOT / MOVEMENT CONFIG
 # =====================
 const SEARCH_DISTANCE: float = 10.0
 const SEARCH_STEPS: int = 15
+const CELL_SIZE := 4.0
 
 
-# =====================
-# CREW COSTS
-# =====================
 const COST_WITH_WIND: float = 1.0
 const COST_CROSS_WIND: float = 2.0
 const COST_AGAINST_WIND: float = 3.0
 
 
 func _ready() -> void:
-	wind_direction = wind_direction.normalized()
+	_update_wind_visual()
+
+
+func _process(_delta: float) -> void:
+	# Keep it brutally simple and reactive
 	_update_wind_visual()
 
 
@@ -31,11 +31,24 @@ func _ready() -> void:
 # VISUALIZATION
 # =====================
 func _update_wind_visual() -> void:
-	if not has_node("WindArrow"):
+	if not has_node("pivot"):
 		return
 
-	var arrow: Node3D = $WindArrow
-	arrow.look_at(global_position + wind_direction, Vector3.UP)
+	var pivot: Node3D = $pivot
+
+	var dir := wind_direction
+	dir.y = 0.0
+
+	if dir.length() == 0.0:
+		return
+
+	dir = dir.normalized()
+
+	# Godot forward is -Z
+	var yaw := atan2(dir.x, -dir.z)
+	pivot.rotation.y = yaw
+
+
 
 
 # =====================
@@ -46,12 +59,10 @@ func calculate_fair_loot_point(
 	ship_b_pos: Vector3
 ) -> Vector3:
 
-	var wind: Vector3 = wind_direction
+	var wind := wind_direction.normalized()
+	wind.y = 0.0
 
-	# Midpoint between ships
 	var midpoint: Vector3 = (ship_a_pos + ship_b_pos) * 0.5
-
-	# Perpendicular slide axis
 	var slide_dir: Vector3 = wind.cross(Vector3.UP).normalized()
 
 	var best_point: Vector3 = midpoint
@@ -73,23 +84,25 @@ func calculate_fair_loot_point(
 	return best_point
 
 
-# =====================
-# INTERNAL HELPERS
-# =====================
-func _movement_cost(
-	from: Vector3,
-	to: Vector3,
-	wind: Vector3
-) -> float:
+func get_move_cost(from: Vector3, to: Vector3) -> float:
+	return _movement_cost(from, to, wind_direction)
 
+
+# =====================
+# INTERNAL
+# =====================
+func _movement_cost(from: Vector3, to: Vector3, wind: Vector3) -> float:
 	var delta: Vector3 = to - from
-	var distance: float = delta.length()
+	var distance_world: float = delta.length()
 
-	if distance == 0.0:
+	if distance_world == 0.0:
 		return 0.0
 
+	# Convert world distance to grid distance
+	var distance_grid: float = distance_world / CELL_SIZE
+
 	var dir: Vector3 = delta.normalized()
-	var dot: float = dir.dot(wind)
+	var dot: float = dir.dot(-wind)
 
 	var crew_multiplier: float = COST_CROSS_WIND
 
@@ -98,4 +111,4 @@ func _movement_cost(
 	elif dot < -0.5:
 		crew_multiplier = COST_AGAINST_WIND
 
-	return distance * crew_multiplier
+	return distance_grid * crew_multiplier
